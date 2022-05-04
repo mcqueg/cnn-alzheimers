@@ -1,5 +1,16 @@
 # RoadMap
 
+## 0. Background
+
+- [x] [**ConvNets basics**](./notes/convnets.md)
+- [ ] **Simple CNN w/ MNIST**
+- [ ] **CNN literature for AD**
+  - find and record  
+        - data prep  
+        - architecture specifics  
+        - tricks/tips  
+        - what generates the best prediction accuracy
+
 ## 1. Data Preprocessing and Augmentation
 
 Build a preprocessing function that will feed into models which performs:
