@@ -5,3 +5,4 @@ notes/
 .vscode/settings.json
 .tmp.drivedownload
 .tmp.driveupload
+*.pyc
