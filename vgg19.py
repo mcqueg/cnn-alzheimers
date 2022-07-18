@@ -1,34 +1,34 @@
 '''
-INCEPTION-V3 MODULE:
+VGG19 MODULE:
 '''
 # import libraries
-from tensorflow.keras.applications.inception_v3 import InceptionV3
+from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.optimizers import Adam
 import time
 
 # src imports
 from src.models.model_utils import add_Dense_layers
 
-def build_inception_v3(input_shape,
-                       class_num,
-                       last_layer,
-                       dense_nodes,
-                       lr, 
-                       dropout, 
-                       loss, 
-                       metrics, 
-                       print_summary=False
-                       ):
+def build_vgg19(input_shape,
+                class_num,
+                last_layer,
+                dense_nodes,
+                lr, 
+                dropout, 
+                loss, 
+                metrics, 
+                print_summary=False
+                ):
     '''
     Purpose: 
-        Initializes and compiles an inceptionv3 model with pretrained weights from ImageNet up \
-         to the specified last layer using the passed training parameter arguments. Dense network \
-         appended has a Dense layer of 1024 and droput layer as well as a classification \
+        Initializes and compiles a vgg19 model with pretrained weights from ImageNet up
+         to the specified last layer using the passed training parameter arguments. Dense network
+         appended has a Dense layer of 1024 and droput layer as well as a classification
          layer with softmax activation. 
     Parameters:
         input_shape - tuple - must be 3 channels i.e. (256, 256, 3)
         class_num - int - specified number of classes to set the shape of the output layer (softmax)
-        last_layer - str - specified layer to use as the input layer to the dense network. \
+        last_layer - str - specified layer to use as the input layer to the dense network.
                             see model.summary() for architecture
         dense_nodes - int - number of nodes to include in dense layer
         lr - float - learning rate for defualt ADAM optimizer
@@ -44,20 +44,20 @@ def build_inception_v3(input_shape,
     # -- LOAD WEIGHTS --
 
     # set the downloaded weights file to a variable
-    inception_v3_weights = 'models/raw/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
-   
-    #inception_v3_weights = '/Users/garrettmccue/projects/cnn-alzheimers/models/raw/\
-    #                                inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    vgg19_weights = 'models/raw/_weights_tf_dim_ordering_tf_kernels_notop.h5'
+
+    #vgg19_weights = '/Users/garrettmccue/projects/cnn-alzheimers/models/raw/\
+    #                                vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
     # Initialize base model from tensorflow.keras
     # Set the input shape and remove dense layers (top), to match our weights file
-    pre_trained_model = InceptionV3(input_shape = input_shape,
+    pre_trained_model = VGG19(input_shape = input_shape,
                                     include_top= False,
                                     weights = None)
-
     # load pretrained weights
-    print(f'Loading Inception-v3 weights from:\n\t PATH = {inception_v3_weights}...')
-    pre_trained_model.load_weights(inception_v3_weights)
+    print(f'Loading vgg19 weights from:\n\t PATH = {vgg19_weights}...')
+    pre_trained_model.load_weights(vgg19_weights)
+
 
     # -- FORMATTING PRE-TRAINED MODEL -- 
 
@@ -70,29 +70,14 @@ def build_inception_v3(input_shape,
     last_layer = pre_trained_model.get_layer(last_layer)
     print(f'Last layer output shape: {last_layer.output_shape}')
     last_output = last_layer.output
-    
-    
-    # ---  ADDING DENSE LAYER ---
+
+        # ---  ADDING DENSE LAYER ---
     # add_Dense_layer() from model_utils.py
     model = add_Dense_layers(pre_trained_model, last_output, dense_nodes, class_num, dropout)
-
     print('Building Dense layers...')
     print(f'\tAdding Dense layer with {dense_nodes} nodes')
     print(f'\tAdding classification layer for {class_num} classes')
-    
-    '''
-    # Flatten the output layer to 1 dimension
-    x = layers.Flatten()(last_output)
-    # add a fully connected layer
-    x = layers.Dense(1024, activation='relu')(x)
-    # add the dropout rate of 0.2
-    x = layers.Dropout(dropout)(x)
-    # add a final layer with softmax for classification
-    x = layers.Dense(class_num, activation='softmax')(x)
 
-    # append the created dense network to the pre_trained_model
-    model = Model(pre_trained_model.input, x)
-    '''
     print('Compiling the model...')
     # -- COMPILE MODEL --
     model.compile(optimizer = Adam(learning_rate=lr),
@@ -106,3 +91,5 @@ def build_inception_v3(input_shape,
         model.summary()
     
     return model
+    
+    
