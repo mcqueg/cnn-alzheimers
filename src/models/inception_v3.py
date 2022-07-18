@@ -4,11 +4,22 @@ INCEPTION-V3 MODULE:
 # import libraries
 from tensorflow.keras.applications.inception_v3 import InceptionV3
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras import layers
-from tensorflow.keras import Model
+
 import time
 
-def build_inception_v3(input_shape, class_num, last_layer, lr, dropout, loss, metrics, print_summary=False):
+# src imports
+from src.models.model_utils import add_Dense_layers
+
+def build_inception_v3(input_shape,
+                       class_num,
+                       last_layer,
+                       dense_nodes,
+                       lr, 
+                       dropout, 
+                       loss, 
+                       metrics, 
+                       print_summary=False
+                       ):
     '''
     Purpose: 
         Initializes and compiles an inceptionv3 model with pretrained weights from ImageNet up \
@@ -57,11 +68,15 @@ def build_inception_v3(input_shape, class_num, last_layer, lr, dropout, loss, me
 
     print(f'Setting last layer as: {last_layer}')
     # choose last layer from the pretrained model to feed into the dense layers
-    last_layer = pre_trained_model.get_layer('mixed8')
+    last_layer = pre_trained_model.get_layer(last_layer)
     print(f'Last layer output shape: {last_layer.output_shape}')
     last_output = last_layer.output
     
+    
     # ---  ADDING DENSE LAYER ---
+    # add_Dense_layer() from model_utils.py
+    model = add_Dense_layers(pre_trained_model, last_output, dense_nodes, class_num, dropout)
+    '''
     print('Adding Dense layers...')
     # Flatten the output layer to 1 dimension
     x = layers.Flatten()(last_output)
@@ -74,7 +89,7 @@ def build_inception_v3(input_shape, class_num, last_layer, lr, dropout, loss, me
 
     # append the created dense network to the pre_trained_model
     model = Model(pre_trained_model.input, x)
-
+    '''
     print('Compiling the model...')
     # -- COMPILE MODEL --
     model.compile(optimizer = Adam(learning_rate=lr),
