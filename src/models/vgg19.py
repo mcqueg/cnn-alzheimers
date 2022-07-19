@@ -22,9 +22,7 @@ def build_vgg19(input_shape,
     '''
     Purpose: 
         Initializes and compiles a vgg19 model with pretrained weights from ImageNet up
-         to the specified last layer using the passed training parameter arguments. Dense network
-         appended has a Dense layer of 1024 and droput layer as well as a classification
-         layer with softmax activation. 
+         to the specified last layer using the passed training parameter arguments. 
     Parameters:
         input_shape - tuple - must be 3 channels i.e. (256, 256, 3)
         class_num - int - specified number of classes to set the shape of the output layer (softmax)
