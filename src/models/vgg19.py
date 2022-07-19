@@ -44,7 +44,7 @@ def build_vgg19(input_shape,
     # -- LOAD WEIGHTS --
 
     # set the downloaded weights file to a variable
-    vgg19_weights = 'models/raw/_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    vgg19_weights = 'models/raw/vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
     #vgg19_weights = '/Users/garrettmccue/projects/cnn-alzheimers/models/raw/\
     #                                vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5'
