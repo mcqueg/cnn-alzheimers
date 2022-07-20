@@ -1,13 +1,32 @@
 import numpy as np
 import cv2
 
+def process_img(img):
+    '''
+    Purpose: process one image when it is called during data generation. Strips the skull
+                from the image and then expands the image to have 3 channels due to the input 
+                needs of the models.
+    Parameters:
+            img - grayscale image (1 channel) to process 
+    Returns:
+            processed_img - image processed and ready to be used for training.
+    '''
+    # strip the skull from the image
+    img = strip_skull(img)
+    # create a 3channel grayscale image
+    processed_img = stack_image(img)
+
+    return processed_img
+
+#------------------------------------------------------------------------------------------
+
 def strip_skull(img):
     '''
     Purpose: given an image, the binary threshold is found using Otsu's method before computing
         the connected components in order to extract the brain. Potential holes in the mask are
         closed using a closing transformation, before returning the new image without the skull.
     Parameters: 
-        -img: brain scan image with skull
+        -img: brain scan image with skull, one channel
     Returns:
         -brain_out: copy of the original image with the skull removed.
     '''
@@ -35,3 +54,19 @@ def strip_skull(img):
     brain_out[closing==False] = 0
     
     return brain_out
+
+#------------------------------------------------------------------------------------------
+
+def stack_image(img):
+    '''
+    Purpose:
+        Turn a single channel image into a three channel image. Stacks the image on top
+        of itself to achieve the three dimensions. 
+    Parameters:
+        img - greyscale image to expand to three channels
+    Returns:
+        img_stack - img with 3 channels
+    '''
+    img_stack = np.stack((img,)*3, axis=-1)
+
+    return img_stack
