@@ -9,7 +9,7 @@ def process_img(img):
     Parameters:
             img - grayscale image (1 channel) to process 
     Returns:
-            processed_img - image processed and ready to be used for training.
+            processed_img - image processed, ready to be used for training.
     '''
     # strip the skull from the image
     img = strip_skull(img)
