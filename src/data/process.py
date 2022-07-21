@@ -1,18 +1,19 @@
 import numpy as np
 import cv2
+from PIL import Image
 
-def process_img(img):
+def process_img(img_path):
     '''
     Purpose: process one image when it is called during data generation. Strips the skull
                 from the image and then expands the image to have 3 channels due to the input 
                 needs of the models.
     Parameters:
-            img - grayscale image (1 channel) to process 
+            img - path to grayscale image (1 channel) to process 
     Returns:
             processed_img - image processed, ready to be used for training.
     '''
     # strip the skull from the image
-    img = strip_skull(img)
+    img = strip_skull(img_path)
     # create a 3channel grayscale image
     processed_img = stack_image(img)
 
@@ -20,7 +21,7 @@ def process_img(img):
 
 #------------------------------------------------------------------------------------------
 
-def strip_skull(img):
+def strip_skull(img_path):
     '''
     Purpose: given an image, the binary threshold is found using Otsu's method before computing
         the connected components in order to extract the brain. Potential holes in the mask are
@@ -31,17 +32,24 @@ def strip_skull(img):
         -brain_out: copy of the original image with the skull removed.
     '''
     # ensure the image is in grayscale
-    img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    #img = cv2.imread(img_path)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     #Threshold the image to binary using Otsu's method
     ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
     ret, markers = cv2.connectedComponents(thresh)
 
     #Get the area taken by each component. Ignore label 0 since this is the background.
     marker_area = [np.sum(markers==m) for m in range(np.max(markers)) if m!=0] 
+    #marker_area = [np.sum(markers==m) for m in range(np.max(markers))] 
     #Get label of largest component by area
-    largest_component = np.argmax(marker_area)+1 #Add 1 since we dropped zero above                        
-    #Get pixels which correspond to the brain
-    brain_mask = markers==largest_component
+    
+    try:
+        largest_component = np.argmax(marker_area)+1 #Add 1 since we dropped zero above                        
+        #Get pixels which correspond to the brain
+        brain_mask = markers==largest_component
+    except ValueError:
+        return img.copy()
 
     # close the holes in the mask to retain the full brain image using a closing transformation
     brain_mask = np.uint8(brain_mask)
