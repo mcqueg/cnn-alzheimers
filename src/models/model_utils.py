@@ -63,8 +63,7 @@ def train_val_model(model,
         rotation_range=20,
         horizontal_flip = True,
         vertical_flip = True,
-        validation_split = val_size,
-        preprocessing_function = process_img)
+        validation_split = val_size)
 
     train_generator = datagen.flow_from_directory(train_dir,
                                                   batch_size = batch_size,

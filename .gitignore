@@ -1,7 +1,7 @@
 
-*.jpg
+data/raw/*
 .DS_Store
-notes/
+notes/*
 .vscode/settings.json
 .tmp.drivedownload
 .tmp.driveupload

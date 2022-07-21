@@ -1,6 +1,9 @@
 import numpy as np
 import cv2
+import os
+import time
 from PIL import Image
+
 
 def process_img(img_path):
     '''
@@ -78,3 +81,63 @@ def stack_image(img):
     img_stack = np.stack((img,)*3, axis=-1)
 
     return img_stack
+
+#------------------------------------------------------------------------------------------
+    # loop through class names generating the path to folder of that class
+
+def process_dir(IN_DIR, OUT_DIR):
+    # get class dir names
+    CLASSES = os.listdir(IN_DIR)
+    # create directories for them based on class
+    for dir in CLASSES:
+        os.makedirs(os.path.join(OUT_DIR, dir))
+    
+    #files = 0
+
+    #for dir in os.listdir(IN_DIR):
+    #    dir_num = len([f for f in os.listdir(os.path.join(IN_DIR, dir)) if not f.startswith('.')])
+    #    #files+=len(os.listdir(os.path.join(IN_DIR, dir)))
+    #    files+=dir_num
+    #print(f'{files} found to process')
+
+
+    num_processed = 1
+    for c in CLASSES:
+        out_class_dir = os.path.join(OUT_DIR, c)
+        class_dir = os.path.join(IN_DIR, c)
+        #loop through each image in the current class directory
+        for image in os.listdir(class_dir):
+            img_path = os.path.join(class_dir, image)
+            #ignore image if it is of size = 0
+            if os.path.getsize(img_path) == 0:
+                print(f'{img_path} is zero length so ignoring.')
+            else:
+                processed_img = process_img(img_path) #process image from ROOT/src/data/process.py
+                print(f'\r{num_processed} images processed', end='')
+                time.sleep(.05)
+                #create path to out image
+                out_path = os.path.join(out_class_dir, image)
+                # write the processed image into the processed directory within its class folder
+                cv2.imwrite(out_path,processed_img)
+                num_processed += 1
+    print()
+
+if __name__== "__main__":
+
+    ROOT = '/Users/garrettmccue/projects/cnn-alzheimers/'
+    data = f'{ROOT}/data/'
+
+    os.makedirs(f'{data}/processed/ADNI/train')
+    os.makedirs(f'{data}/processed/ADNI/test')
+
+    # path to save images to
+    TRAIN_OUT_DIR = f'{data}/processed/ADNI/train'
+    # path to raw data root folder 
+    TRAIN_IN_DIR = f'{data}/raw/ADNI/train'
+
+    TEST_OUT_DIR = f'{data}/processed/ADNI/test'
+    TEST_IN_DIR = f'{data}/raw/ADNI/test'
+    # process the training images
+    process_dir(TRAIN_IN_DIR, TRAIN_OUT_DIR)
+    # process the test images
+    process_dir(TEST_IN_DIR, TEST_OUT_DIR)
