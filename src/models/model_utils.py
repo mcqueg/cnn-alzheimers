@@ -97,7 +97,7 @@ def train_val_model(model,
         EarlyStopping(monitor='val_loss', mode='min',patience=10, verbose=1),
 
         # monitor training progress using Tensorboard
-        TensorBoard(Log_dir = log),
+        TensorBoard(log_dir = log),
 
         # checkpoint model 
         ModelCheckpoint(
