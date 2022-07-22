@@ -99,7 +99,7 @@ def build_inception_v3(input_shape,
 
     end = time.time()
 
-    print(f'Model built in: {end-start} seconds ')
+    print(f'Model built in: {end-start} seconds \n')
     if print_summary:
         model.summary()
     

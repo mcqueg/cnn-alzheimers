@@ -1,7 +1,10 @@
-import random
+from distutils.log import Log
+import os
+import time
 from tensorflow.keras import layers
 from tensorflow.keras import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import matplotlib.pyplot as plt
 
 # local imports
@@ -23,7 +26,7 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
                     Note: this should be set to the number of predicted classes.
         droput-float- specified dropout to apply to the dense layer. 
     '''
-    print('Building Dense layers...')
+    print('Initializing Dense layers...')
     # Flatten the output layer to 1 dimension
     x = layers.Flatten()(last_output)
     # add a fully connected layer
@@ -40,8 +43,11 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
 
     #--------------------------------------------------------------------------------------------
 
-def train_val_model(model, 
+def train_val_model(model,
+                    model_name,
                     train_dir,
+                    logs_dir,
+                    save_dir,
                     val_size,
                     epochs,
                     batch_size):
@@ -57,7 +63,8 @@ def train_val_model(model,
     Returns:
         history - model training history
     '''
-
+    start_time = time.time
+    # -- BUILD IMAGE GENERATORS -- 
     datagen = ImageDataGenerator(
         rescale = 1./255,
         rotation_range=20,
@@ -78,12 +85,38 @@ def train_val_model(model,
                                                   subset='validation',
                                                   shuffle=True,
                                                   seed = 42)
+
+    # -- CREATE CALLBACKS --
+    # create new unique log dir for current run log for Tensorboard
+    name = f'{model_name}_{start_time}'
+    log = os.path.join(logs_dir, name)
+    # generate callbaks
+    callbacks = [
+        # monitor the validation loss exiting training if it doesnt improve
+        #   after 'patience' num of epochs.
+        EarlyStopping(monitor='val_loss', mode='min',patience=10, verbose=1),
+
+        # monitor training progress using Tensorboard
+        TensorBoard(Log_dir = log),
+
+        # checkpoint model 
+        ModelCheckpoint(
+            filepath=os.path.join(save_dir,name),
+            monitor='val_loss',
+            verbose=1,
+            save_best_only=True,
+            mode='min',
+            save_freq='epoch')
+        ]
+
+    # -- FIT MODEL -- 
     history = model.fit(train_generator,
                         epochs=epochs,
                         verbose=1,
-                        validation_data=val_generator)
+                        validation_data=val_generator,
+                        callbacks = [callbacks])
 
-    plot_history(history)
+    #plot_history(history)
 
     return history
 
