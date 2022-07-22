@@ -65,7 +65,7 @@ def train_val_model(model,
         history - model training history
     '''
     now = datetime.now()
-    start_time = now.strftime("%d/%m/%Y %H:%M:%S")
+    start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
     # -- BUILD IMAGE GENERATORS -- 
     datagen = ImageDataGenerator(
         rescale = 1./255,
