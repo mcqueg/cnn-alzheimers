@@ -1,5 +1,6 @@
 from distutils.log import Log
 import os
+from datetime import datetime
 import time
 from tensorflow.keras import layers
 from tensorflow.keras import Model
@@ -63,7 +64,8 @@ def train_val_model(model,
     Returns:
         history - model training history
     '''
-    start_time = time.time
+    now = datetime.now()
+    start_time = now.strftime("%d/%m/%Y %H:%M:%S")
     # -- BUILD IMAGE GENERATORS -- 
     datagen = ImageDataGenerator(
         rescale = 1./255,
