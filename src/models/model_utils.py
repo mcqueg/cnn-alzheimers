@@ -22,7 +22,7 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
         model - the pretrained model to append the dense network to
         last_output- the output from the last layer of the pretrained model.
                       this will be fed into the dense network
-        dense_nodes - int- determines the number of nodes to include in the first dense layer
+        dense_nodes - list- determines the number of nodes to include in the dense layers
         class_num-int- determines the number of output nodes are needed in the classification layer.
                     Note: this should be set to the number of predicted classes.
         droput-float- specified dropout to apply to the dense layer. 
@@ -30,10 +30,12 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
     print('Initializing Dense layers...')
     # Flatten the output layer to 1 dimension
     x = layers.Flatten()(last_output)
-    # add a fully connected layer
-    x = layers.Dense(dense_nodes, activation='relu')(x)
-    # add the dropout rate of 0.2
-    x = layers.Dropout(dropout)(x)
+
+    for num in dense_nodes:
+        # add a fully connected layer
+        x = layers.Dense(num, activation='relu')(x)
+        # add the dropout rate of 0.2
+        x = layers.Dropout(dropout)(x)
     # add a final layer with softmax for classification
     x = layers.Dense(class_num, activation='softmax')(x)
 
