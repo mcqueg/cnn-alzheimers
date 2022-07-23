@@ -4,7 +4,7 @@ import random
 from src.models.model_utils import plot_history
 from src.models.inception_v3 import build_inception_v3
 from src.models.vgg19 import build_vgg19
-from src.models.resnet50 import build_net50, build_resnet50
+from src.models.resnet50 import build_resnet50
 from src.models.xception import build_xception
 from datetime import datetime
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
