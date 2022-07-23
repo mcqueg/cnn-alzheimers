@@ -53,6 +53,7 @@ def build_train_val_model(input_shape,
     '''
     now = datetime.now()
     start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
+    name = f'{model_name}_{start_time}'
     
     # -- BUILDING MODEL -- 
     m = '*'
@@ -128,7 +129,6 @@ def build_train_val_model(input_shape,
 
     # -- CREATE CALLBACKS --
     # create new unique log dir for current run log for Tensorboard
-    name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
 
     # generate callbaks
