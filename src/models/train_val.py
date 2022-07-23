@@ -125,7 +125,7 @@ def build_train_val_model(input_shape,
     test_gen = test_datagenerator.flow_from_directory(test_dir,
                                                      batch_size = batch_size,
                                                      class_mode = 'categorical',
-                                                     subset='train',
+                                                     subset='training',
                                                      shuffle=True,
                                                      seed = 42)
 
