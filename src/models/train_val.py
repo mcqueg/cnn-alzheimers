@@ -63,7 +63,7 @@ def build_train_val_model(model_type,
     m = '*'
     print(f"\n{m*60}\n\t\tBUILDING MODEL\n{m*60}\n")
 
-    if (model_type.equals('inception_v3')):
+    if model_type == 0:
         model = build_inception_v3(input_shape,
                        class_num,
                        last_layer,
@@ -71,7 +71,7 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    if (model_type.equals('vgg19')):
+    if model_type == 1:
         model = build_vgg19(input_shape,
                        class_num,
                        last_layer,
@@ -79,7 +79,7 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    if(model_type.equals('resnet50')):
+    if model_type == 2:
         model = build_resnet50(input_shape,
                        class_num,
                        last_layer,
@@ -87,7 +87,7 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    if(model_type.equals('xception')):
+    if model_type == 3:
         model = build_xception(input_shape,
                        class_num,
                        last_layer,
