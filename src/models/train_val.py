@@ -166,7 +166,7 @@ def build_train_val_model(input_shape,
     # -- EVALUATE MODEL -- 
     if evaluate:
         m = '*'
-        print(f"\n{m*70}\n\t\tEVALUATING BEST MODEL\n{m*70}\n")
+        print(f"\n{m*70}\n\t\tEVALUATING MODEL\n{m*70}\n")
         # load best model (latest save)
         config = os.path.join(os.path.join(save_dir,name), 'config')
         config_path = f'{config}/{name}.json'
@@ -187,8 +187,8 @@ def build_train_val_model(input_shape,
                                    batch_size=batch_size,
                                    verbose=2)
 
-        print("MODEL TEST ACCURACY: {:5.2f}%".format(100 * acc))
-        print("MODEL TEST LOSS: {:5.2}%".format(loss))
+        print("\nMODEL TEST ACCURACY: {:5.2f}%".format(100 * acc))
+        print("\nMODEL TEST LOSS: {:5.2}%".format(loss))
         
 
     return history
