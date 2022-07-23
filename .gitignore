@@ -1,7 +1,9 @@
 
 .DS_Store
 notes/*
+notes/convnets.md
 .vscode/settings.json
 .tmp.drivedownload
 .tmp.driveupload
 *.pyc
+*.h5
