@@ -106,6 +106,9 @@ def build_train_val_model(input_shape,
         validation_split = val_size
     )
 
+    # split the test images into test and validaton
+    # using this because the number of images for training is sparse
+    # feed in test data under the 'train' subset so this will be the largest
     train_gen = train_datagenerator.flow_from_directory(train_dir,
                                                   batch_size = batch_size,
                                                   class_mode = 'categorical',
@@ -122,7 +125,7 @@ def build_train_val_model(input_shape,
     test_gen = test_datagenerator.flow_from_directory(test_dir,
                                                      batch_size = batch_size,
                                                      class_mode = 'categorical',
-                                                     subset='test',
+                                                     subset='train',
                                                      shuffle=True,
                                                      seed = 42)
 
