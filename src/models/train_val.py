@@ -117,6 +117,7 @@ def build_train_val_model(input_shape,
     # create new unique log dir for current run log for Tensorboard
     name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
+
     os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
     weights_path=os.path.join(os.path.join(save_dir,name),'weights')
     print(f"\nsaving weights at: {weights_path}")
@@ -153,8 +154,8 @@ def build_train_val_model(input_shape,
 
     # -- save model architecture
     model_config = model.to_json()
-    with open(os.path.join(config_path, f'{name}.json'), 'w') as outfile:
-        json.dump(model_config, outfile)
+    with open(os.path.join(config_path, f'{name}.json'), 'w') as json_file:
+        json_file.write(model_config)
 
     if plot_history:
         print("\nPlotting training history ...\n")
