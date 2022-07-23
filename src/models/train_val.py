@@ -65,6 +65,19 @@ def build_train_val_model(input_shape,
                        print_summary=print_summary
                        )
 
+    os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
+    weights_path=os.path.join(os.path.join(save_dir,name),'weights')
+    print(f"\nsaving weights at: \n\t{weights_path}")
+
+    os.makedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
+    config_path=os.path.join(os.path.join(save_dir,name), 'config')
+    print(f"\nsaving model architecture at: \n\t{config_path}\n")
+    
+    # -- save model architecture
+    model_config = model.to_json()
+    with open(os.path.join(config_path, f'{name}.json'), 'w') as json_file:
+        json_file.write(model_config)
+
 
     print(f"\n{m*60}\n\t\tCOMPILING MODEL\n{m*60}\n")
     # compile model
@@ -118,13 +131,6 @@ def build_train_val_model(input_shape,
     name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
 
-    os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
-    weights_path=os.path.join(os.path.join(save_dir,name),'weights')
-    print(f"\nsaving weights at: {weights_path}")
-
-    os.makedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
-    config_path=os.path.join(os.path.join(save_dir,name), 'config')
-    print(f"\nsaving model architecture at: {config_path}")
     # generate callbaks
     callbacks = [
         # monitor the validation loss exiting training if it doesnt improve
@@ -151,11 +157,6 @@ def build_train_val_model(input_shape,
                         verbose=1,
                         validation_data=val_gen,
                         callbacks = [callbacks])
-
-    # -- save model architecture
-    model_config = model.to_json()
-    with open(os.path.join(config_path, f'{name}.json'), 'w') as json_file:
-        json_file.write(model_config)
 
     if plot_history:
         print("\nPlotting training history ...\n")
