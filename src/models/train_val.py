@@ -12,6 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoa
 from tensorflow.keras.optimizers import Adam
 # from tensorflow.keras.models import load_weights
 from tensorflow.keras.models import model_from_json
+from keras.initializers import glorot_uniform
 
 
 
@@ -66,8 +67,8 @@ def build_train_val_model(input_shape,
                        print_summary=print_summary
                        )
 
-    os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
-    weights_path=os.path.join(os.path.join(save_dir,name),'weights')
+    os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
+    weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
     print(f"\nsaving weights at: \n\t{weights_path}")
 
     os.makedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
@@ -142,7 +143,7 @@ def build_train_val_model(input_shape,
 
         # checkpoint model 
         ModelCheckpoint(
-            filepath=weights_path,
+            filepath=os.path.join(weights_path, f'{name}_weights.h5'),
             monitor='val_loss',
             verbose=0,
             save_best_only=True,
@@ -167,8 +168,14 @@ def build_train_val_model(input_shape,
         m = '*'
         print(f"\n{m*70}\n\t\tEVALUATING BEST MODEL\n{m*70}\n")
         # load best model (latest save)
-        weights_path = os.path.join(save_dir,name)
-        model_eval = model_from_json(os.path.join(config_path, f'{name}.json'))
+        config = os.path.join(os.path.join(save_dir,name), 'config')
+        config_path = f'{config}/{name}.json'
+        with open (config_path, 'r') as json_file:
+            json_Model = json_file.read()
+        model_eval = model_from_json(json_Model)
+
+        # load the weights
+        weights_path = os.path.join(weights_path, f'{name}_weights.h5')
         model_eval.load_weights(weights_path)
         # if model_idx == 0:
         #     model_best = load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout)
