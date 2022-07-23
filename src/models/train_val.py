@@ -70,7 +70,7 @@ def build_train_val_model(input_shape,
     print(f"\n{m*60}\n\t\tCOMPILING MODEL\n{m*60}\n")
     # compile model
     model.compile(optimizer = Adam(learning_rate=lr),
-                  loss = loss,
+                  loss = 'categorical_crossentropy',
                   metrics = ['accuracy'])
     # BEGIN TRAINING
     print(f"\n{m*60}\n\t\tSHUFFLING IMAGES\n{m*60}\n")
