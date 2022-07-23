@@ -12,7 +12,7 @@ from tensorflow.keras.models import load_model
 def shuffle_dirs(parent_dir):
     # shuffle the subdirectories of the training parent dir before training starts
     random.seed(30)
-    for dir in os.lisdir(parent_dir):
+    for dir in os.listdir(parent_dir):
         random.shuffle(os.listdir(os.path.join(parent_dir, dir)))
 
 def train_val_model(model,
