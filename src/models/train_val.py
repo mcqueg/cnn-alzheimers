@@ -1,13 +1,19 @@
 import os
 import random
-
+import time
 from sympy import evaluate
 from yaml import load
 from src.models.model_utils import plot_history
+from src.models.inception_v3 import build_inception_v3, load_inception_v3
+from src.models.vgg19 import build_vg19
+from src.models.resnet50 import build_net50
+from src.models.xception import build_xception
 from datetime import datetime
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
-from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import load_weights
+
 
 def shuffle_dirs(parent_dir):
     # shuffle the subdirectories of the training parent dir before training starts
@@ -15,7 +21,12 @@ def shuffle_dirs(parent_dir):
     for dir in os.listdir(parent_dir):
         random.shuffle(os.listdir(os.path.join(parent_dir, dir)))
 
-def train_val_model(model,
+def build_train_val_model(input_shape,
+                    class_num,
+                    last_layer,
+                    dense_nodes,
+                    lr,
+                    dropout,
                     model_name,
                     train_dir,
                     test_dir,
@@ -24,8 +35,11 @@ def train_val_model(model,
                     val_size,
                     epochs,
                     batch_size,
-                    plot_history=False,
+                    model_idx,
+                    print_summary=False,
+                    plot_history=False, 
                     evaluate=False):
+
     '''
     Purpose: Train the compiled model. Model trains for specified epochs or until it early
                 stopping is triggered via a val_loss call back. 
@@ -41,8 +55,25 @@ def train_val_model(model,
     now = datetime.now()
     start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
     
+    # -- BUILDING MODEL -- 
     m = '*'
-    print(f"\n{m*70}\n\t\tSHUFFLING IMAGES\n{m*70}\n")
+    print(f"\n{m*60}\n\t\tBUILDING MODEL\n{m*60}\n")
+    model = build_inception_v3(input_shape,
+                       class_num,
+                       last_layer,
+                       dense_nodes,
+                       dropout, 
+                       print_summary=print_summary
+                       )
+
+
+    print(f"\n{m*60}\n\t\tCOMPILING MODEL\n{m*60}\n")
+    # compile model
+    model.compile(optimizer = Adam(learning_rate=lr),
+                  loss = loss,
+                  metrics = ['accuracy'])
+    # BEGIN TRAINING
+    print(f"\n{m*60}\n\t\tSHUFFLING IMAGES\n{m*60}\n")
     # shuffle images
     shuffle_dirs(train_dir)
     # -- BUILD IMAGE GENERATORS -- 
@@ -96,6 +127,7 @@ def train_val_model(model,
             monitor='val_loss',
             verbose=0,
             save_best_only=True,
+            save_weights_only=True,
             mode='min',
             save_freq='epoch')
         ]
@@ -116,7 +148,10 @@ def train_val_model(model,
         m = '*'
         print(f"\n{m*70}\n\t\tEVALUATING BEST MODEL\n{m*70}\n")
         # load best model (latest save)
-        model_best = load_model(os.path.join(save_dir,name))
+        weights_path = os.path.join(save_dir,name)
+
+        if model_idx == 0:
+            model_best = load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout)
 
         loss, acc = model_best.evaluate(test_gen,
                                    batch_size=batch_size,
