@@ -113,7 +113,9 @@ def build_train_val_model(input_shape,
     name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
     weights_path=os.mkdir(os.path.join(os.path.join(save_dir,name),'weights'))
+    print(f"\nsaving weights at: {weights_path}")
     config_path=os.mkdir(os.path.join(os.path.join(save_dir,name), 'config'))
+    print(f"\nsaving model architecture at: {config_path}")
     # generate callbaks
     callbacks = [
         # monitor the validation loss exiting training if it doesnt improve
