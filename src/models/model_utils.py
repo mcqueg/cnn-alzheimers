@@ -1,15 +1,12 @@
-from distutils.log import Log
-import os
-from datetime import datetime
-import time
+
 from tensorflow.keras import layers
 from tensorflow.keras import Model
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+# from tensorflow.keras.preprocessing.image import ImageDataGenerator
+# from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import matplotlib.pyplot as plt
 
-# local imports
-from src.data.process import process_img
+# # local imports
+# from src.data.process import process_img
 
 def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
     '''
@@ -45,112 +42,104 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
     return dense_model
 
     #--------------------------------------------------------------------------------------------
+# def train_val_model(model,
+#                     model_name,
+#                     train_dir,
+#                     logs_dir,
+#                     save_dir,
+#                     val_size,
+#                     epochs,
+#                     batch_size):
+#     '''
+#     Purpose: Train the compiled model. Model trains for specified epochs or until it early
+#                 stopping is triggered via a val_loss call back. 
+#     parameters:
+#         model - compiled motel to be trained.  
+#         train_dir- string - root dir of the training images to use. organized by class in foflders.
+#         val_size - float - size of the validation split from the training data
+#                     epochs num of epochs to train for
+#         batch_size - int - batch size of images
+#     Returns:
+#         history - model training history
+#     '''
+    # now = datetime.now()
+    # start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
+    # # -- BUILD IMAGE GENERATORS -- 
+    # datagen = ImageDataGenerator(
+    #     rescale = 1./255,
+    #     rotation_range=20,
+    #     horizontal_flip = True,
+    #     vertical_flip = True,
+    #     validation_split = val_size)
 
-def train_val_model(model,
-                    model_name,
-                    train_dir,
-                    logs_dir,
-                    save_dir,
-                    val_size,
-                    epochs,
-                    batch_size):
-    '''
-    Purpose: Train the compiled model. Model trains for specified epochs or until it early
-                stopping is triggered via a val_loss call back. 
-    parameters:
-        model - compiled motel to be trained.  
-        train_dir- string - root dir of the training images to use. organized by class in foflders.
-        val_size - float - size of the validation split from the training data
-                    epochs num of epochs to train for
-        batch_size - int - batch size of images
-    Returns:
-        history - model training history
-    '''
-    now = datetime.now()
-    start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
-    # -- BUILD IMAGE GENERATORS -- 
-    datagen = ImageDataGenerator(
-        rescale = 1./255,
-        rotation_range=20,
-        horizontal_flip = True,
-        vertical_flip = True,
-        validation_split = val_size)
-
-    train_generator = datagen.flow_from_directory(train_dir,
-                                                  batch_size = batch_size,
-                                                  class_mode = 'categorical',
-                                                  subset='training',
-                                                  shuffle=True,
-                                                  seed = 42)
+    # train_generator = datagen.flow_from_directory(train_dir,
+    #                                               batch_size = batch_size,
+    #                                               class_mode = 'categorical',
+    #                                               subset='training',
+    #                                               shuffle=True,
+    #                                               seed = 42)
     
-    val_generator = datagen.flow_from_directory(train_dir,
-                                                  batch_size = batch_size,
-                                                  class_mode = 'categorical',
-                                                  subset='validation',
-                                                  shuffle=True,
-                                                  seed = 42)
+    # val_generator = datagen.flow_from_directory(train_dir,
+    #                                               batch_size = batch_size,
+    #                                               class_mode = 'categorical',
+    #                                               subset='validation',
+    #                                               shuffle=True,
+    #                                               seed = 42)
 
-    # -- CREATE CALLBACKS --
-    # create new unique log dir for current run log for Tensorboard
-    name = f'{model_name}_{start_time}'
-    log = os.path.join(logs_dir, name)
-    # generate callbaks
-    callbacks = [
-        # monitor the validation loss exiting training if it doesnt improve
-        #   after 'patience' num of epochs.
-        EarlyStopping(monitor='val_loss', mode='min',patience=10, verbose=1),
+    # # -- CREATE CALLBACKS --
+    # # create new unique log dir for current run log for Tensorboard
+    # name = f'{model_name}_{start_time}'
+    # log = os.path.join(logs_dir, name)
+    # # generate callbaks
+    # callbacks = [
+    #     # monitor the validation loss exiting training if it doesnt improve
+    #     #   after 'patience' num of epochs.
+    #     EarlyStopping(monitor='val_loss', mode='min',patience=10, verbose=1),
 
-        # monitor training progress using Tensorboard
-        TensorBoard(log_dir = log),
+    #     # monitor training progress using Tensorboard
+    #     TensorBoard(log_dir = log),
 
-        # checkpoint model 
-        ModelCheckpoint(
-            filepath=os.path.join(save_dir,name),
-            monitor='val_loss',
-            verbose=1,
-            save_best_only=True,
-            mode='min',
-            save_freq='epoch')
-        ]
+    #     # checkpoint model 
+    #     ModelCheckpoint(
+    #         filepath=os.path.join(save_dir,name),
+    #         monitor='val_loss',
+    #         verbose=1,
+    #         save_best_only=True,
+    #         mode='min',
+    #         save_freq='epoch')
+    #     ]
 
-    # -- FIT MODEL -- 
-    history = model.fit(train_generator,
-                        epochs=epochs,
-                        verbose=1,
-                        validation_data=val_generator,
-                        callbacks = [callbacks])
+    # # -- FIT MODEL -- 
+    # history = model.fit(train_generator,
+    #                     epochs=epochs,
+    #                     verbose=1,
+    #                     validation_data=val_generator,
+    #                     callbacks = [callbacks])
 
-    #plot_history(history)
+    # #plot_history(history)
 
-    return history
+    # return history
+
 
 #---------------------------------------------------------------------------------------------------
 
 def plot_history(history):
+    '''Plots the training and validation loss and accuracy from a history object'''
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
 
-    #-----------------------------------------------------------
-    # Retrieve a list of list results on training and test data
-    # sets for each training epoch
-    #-----------------------------------------------------------
-    acc=history.history['accuracy']
-    val_acc=history.history['val_accuracy']
-    loss=history.history['loss']
-    val_loss=history.history['val_loss']
+    epochs = range(len(acc))
 
-    epochs=range(len(acc)) # Get number of epochs
-
-    #------------------------------------------------
-    # Plot training and validation accuracy per epoch
-    #------------------------------------------------
-    plt.plot(epochs, acc, 'r', "Training Accuracy")
-    plt.plot(epochs, val_acc, 'b', "Validation Accuracy")
+    plt.plot(epochs, acc, 'bo', label='Training accuracy')
+    plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
     plt.title('Training and validation accuracy')
-    plt.show()
-    print("")
 
-    #------------------------------------------------
-    # Plot training and validation loss per epoch
-    #------------------------------------------------
-    plt.plot(epochs, loss, 'r', "Training Loss")
-    plt.plot(epochs, val_loss, 'b', "Validation Loss")
+    plt.figure()
+
+    plt.plot(epochs, loss, 'bo', label='Training Loss')
+    plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+    plt.title('Training and validation loss')
+    plt.legend()
     plt.show()
