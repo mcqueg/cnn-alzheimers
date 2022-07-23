@@ -13,10 +13,7 @@ def build_xception(input_shape,
                 class_num,
                 last_layer,
                 dense_nodes,
-                lr, 
                 dropout, 
-                loss, 
-                metrics, 
                 print_summary=False
                 ):
     '''
@@ -77,11 +74,11 @@ def build_xception(input_shape,
     print(f'\tAdding Dense layer with {dense_nodes} nodes')
     print(f'\tAdding classification layer for {class_num} classes')
 
-    print('Compiling the model...')
-    # -- COMPILE MODEL --
-    model.compile(optimizer = Adam(learning_rate=lr),
-                  loss = loss,
-                  metrics = metrics)
+    # print('Compiling the model...')
+    # # -- COMPILE MODEL --
+    # model.compile(optimizer = Adam(learning_rate=lr),
+    #               loss = loss,
+    #               metrics = metrics)
 
     end = time.time()
 

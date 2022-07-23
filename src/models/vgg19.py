@@ -12,11 +12,8 @@ from src.models.model_utils import add_Dense_layers
 def build_vgg19(input_shape,
                 class_num,
                 last_layer,
-                dense_nodes,
-                lr, 
+                dense_nodes, 
                 dropout, 
-                loss, 
-                metrics, 
                 print_summary=False
                 ):
     '''
@@ -76,11 +73,11 @@ def build_vgg19(input_shape,
     print(f'\tAdding Dense layer with {dense_nodes} nodes')
     print(f'\tAdding classification layer for {class_num} classes')
 
-    print('Compiling the model...')
-    # -- COMPILE MODEL --
-    model.compile(optimizer = Adam(learning_rate=lr),
-                  loss = loss,
-                  metrics = metrics)
+    # print('Compiling the model...')
+    # # -- COMPILE MODEL --
+    # model.compile(optimizer = Adam(learning_rate=lr),
+    #               loss = loss,
+    #               metrics = metrics)
 
     end = time.time()
 

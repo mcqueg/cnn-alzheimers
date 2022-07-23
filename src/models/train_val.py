@@ -3,9 +3,9 @@ import json
 import random
 from src.models.model_utils import plot_history
 from src.models.inception_v3 import build_inception_v3
-# from src.models.vgg19 import build_vg19
-# from src.models.resnet50 import build_net50
-# from src.models.xception import build_xception
+from src.models.vgg19 import build_vg19
+from src.models.resnet50 import build_net50, build_resnet50
+from src.models.xception import build_xception
 from datetime import datetime
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
@@ -13,6 +13,8 @@ from tensorflow.keras.optimizers import Adam
 # from tensorflow.keras.models import load_weights
 from tensorflow.keras.models import model_from_json
 from keras.initializers import glorot_uniform
+
+from src.models.vgg19 import build_vgg19
 
 
 
@@ -22,7 +24,8 @@ def shuffle_dirs(parent_dir):
     for dir in os.listdir(parent_dir):
         random.shuffle(os.listdir(os.path.join(parent_dir, dir)))
 
-def build_train_val_model(input_shape,
+def build_train_val_model(model_type,
+                    input_shape,
                     class_num,
                     last_layer,
                     dense_nodes,
@@ -59,13 +62,40 @@ def build_train_val_model(input_shape,
     # -- BUILDING MODEL -- 
     m = '*'
     print(f"\n{m*60}\n\t\tBUILDING MODEL\n{m*60}\n")
-    model = build_inception_v3(input_shape,
+
+    if model_type == 'inception_v3':
+        model = build_inception_v3(input_shape,
                        class_num,
                        last_layer,
                        dense_nodes,
                        dropout, 
-                       print_summary=print_summary
-                       )
+                       print_summary=print_summary)
+
+    elif model_type == 'vgg-19':
+        model = build_vgg19(input_shape,
+                       class_num,
+                       last_layer,
+                       dense_nodes,
+                       dropout, 
+                       print_summary=print_summary)
+
+    elif model_type == 'resnet50':
+        model = build_resnet50(input_shape,
+                       class_num,
+                       last_layer,
+                       dense_nodes,
+                       dropout, 
+                       print_summary=print_summary)
+
+    elif model_type == 'xception':
+        model = build_xception(input_shape,
+                       class_num,
+                       last_layer,
+                       dense_nodes,
+                       dropout, 
+                       print_summary=print_summary)
+    else:
+        print("Not a valid model architecture...")
 
     os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
     weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
