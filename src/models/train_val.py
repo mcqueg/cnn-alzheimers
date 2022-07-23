@@ -85,6 +85,11 @@ def build_train_val_model(input_shape,
         horizontal_flip = True,
         fill_mode='nearest',
         validation_split = val_size)
+
+    val_datagenerator = ImageDataGenerator(
+        rescale=1./255,
+        validation_split=val_size
+    )
     
     test_datagenerator = ImageDataGenerator(
         rescale=1./255
@@ -97,7 +102,7 @@ def build_train_val_model(input_shape,
                                                   shuffle=True,
                                                   seed = 42)
     
-    val_gen = train_datagenerator.flow_from_directory(train_dir,
+    val_gen = val_datagenerator.flow_from_directory(train_dir,
                                                   batch_size = batch_size,
                                                   class_mode = 'categorical',
                                                   subset='validation',
