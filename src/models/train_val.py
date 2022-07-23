@@ -71,7 +71,7 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    elif model_type == 'vgg-19':
+    if model_type == 'vgg-19':
         model = build_vgg19(input_shape,
                        class_num,
                        last_layer,
@@ -79,7 +79,7 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    elif model_type == 'resnet50':
+    if model_type == 'resnet50':
         model = build_resnet50(input_shape,
                        class_num,
                        last_layer,
@@ -87,15 +87,14 @@ def build_train_val_model(model_type,
                        dropout, 
                        print_summary=print_summary)
 
-    elif model_type == 'xception':
+    if model_type == 'xception':
         model = build_xception(input_shape,
                        class_num,
                        last_layer,
                        dense_nodes,
                        dropout, 
                        print_summary=print_summary)
-    else:
-        print("Not a valid model architecture...")
+
 
     os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
     weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
