@@ -88,9 +88,9 @@ def build_train_val_model(input_shape,
                   metrics = ['accuracy'])
 
     # BEGIN TRAINING
-    print(f"\n{m*60}\n\t\tSHUFFLING IMAGES\n{m*60}\n")
-    # shuffle images
-    shuffle_dirs(train_dir)
+    print(f"\n{m*60}\n\t\tSTARTING TRAINING\n{m*60}\n")
+    # # shuffle images
+    shuffle_dirs(test_dir)
     # -- BUILD IMAGE GENERATORS -- 
     train_datagenerator = ImageDataGenerator(
         rescale = 1./255,
@@ -98,26 +98,21 @@ def build_train_val_model(input_shape,
         brightness_range=(0,0.2),
         zoom_range=0.2,
         horizontal_flip = True,
-        fill_mode='nearest',
-        validation_split = val_size)
+        fill_mode='nearest')
 
-    val_datagenerator = ImageDataGenerator(
-        rescale=1./255,
-        validation_split=val_size
-    )
     
     test_datagenerator = ImageDataGenerator(
-        rescale=1./255
+        rescale=1./255,
+        validation_split = val_size
     )
 
     train_gen = train_datagenerator.flow_from_directory(train_dir,
                                                   batch_size = batch_size,
                                                   class_mode = 'categorical',
-                                                  subset='training',
                                                   shuffle=True,
                                                   seed = 42)
     
-    val_gen = val_datagenerator.flow_from_directory(train_dir,
+    val_gen = test_datagenerator.flow_from_directory(test_dir,
                                                   batch_size = batch_size,
                                                   class_mode = 'categorical',
                                                   subset='validation',
@@ -126,7 +121,10 @@ def build_train_val_model(input_shape,
 
     test_gen = test_datagenerator.flow_from_directory(test_dir,
                                                      batch_size = batch_size,
-                                                     class_mode = 'categorical')
+                                                     class_mode = 'categorical',
+                                                     subset='test',
+                                                     shuffle=True,
+                                                     seed = 42)
 
     # -- CREATE CALLBACKS --
     # create new unique log dir for current run log for Tensorboard
