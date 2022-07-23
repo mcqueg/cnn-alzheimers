@@ -117,9 +117,12 @@ def build_train_val_model(input_shape,
     # create new unique log dir for current run log for Tensorboard
     name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
-    weights_path=os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
+    os.makedirs(os.path.join(os.path.join(save_dir,name),'weights'), exist_ok=True)
+    weights_path=os.path.join(os.path.join(save_dir,name),'weights')
     print(f"\nsaving weights at: {weights_path}")
-    config_path=os.mkaedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
+
+    os.makedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
+    config_path=os.path.join(os.path.join(save_dir,name), 'config')
     print(f"\nsaving model architecture at: {config_path}")
     # generate callbaks
     callbacks = [
