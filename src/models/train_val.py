@@ -1,10 +1,8 @@
 import os
+import json
 import random
-import time
-from sympy import evaluate
-from yaml import load
 from src.models.model_utils import plot_history
-from src.models.inception_v3 import build_inception_v3, load_inception_v3
+from src.models.inception_v3 import build_inception_v3
 from src.models.vgg19 import build_vg19
 from src.models.resnet50 import build_net50
 from src.models.xception import build_xception
@@ -13,6 +11,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import load_weights
+from tensorflow.keras.models import model_from_json
+
 
 
 def shuffle_dirs(parent_dir):
@@ -35,7 +35,6 @@ def build_train_val_model(input_shape,
                     val_size,
                     epochs,
                     batch_size,
-                    model_idx,
                     print_summary=False,
                     plot_history=False, 
                     evaluate=False):
@@ -72,6 +71,7 @@ def build_train_val_model(input_shape,
     model.compile(optimizer = Adam(learning_rate=lr),
                   loss = 'categorical_crossentropy',
                   metrics = ['accuracy'])
+
     # BEGIN TRAINING
     print(f"\n{m*60}\n\t\tSHUFFLING IMAGES\n{m*60}\n")
     # shuffle images
@@ -112,6 +112,8 @@ def build_train_val_model(input_shape,
     # create new unique log dir for current run log for Tensorboard
     name = f'{model_name}_{start_time}'
     log = os.path.join(logs_dir, name)
+    weights_path=os.mkdir(os.path.join(os.path.join(save_dir,name),'/weights'))
+    config_path=os.mkdir(os.path.join(os.path.join(save_dir,name), '/config'))
     # generate callbaks
     callbacks = [
         # monitor the validation loss exiting training if it doesnt improve
@@ -123,7 +125,7 @@ def build_train_val_model(input_shape,
 
         # checkpoint model 
         ModelCheckpoint(
-            filepath=os.path.join(save_dir,name),
+            filepath=weights_path,
             monitor='val_loss',
             verbose=0,
             save_best_only=True,
@@ -139,6 +141,11 @@ def build_train_val_model(input_shape,
                         validation_data=val_gen,
                         callbacks = [callbacks])
 
+    # -- save model architecture
+    model_config = model.to_json()
+    with open(os.path.join(config_path, f'{name}.json'), 'w') as outfile:
+        json.dump(model_config, outfile)
+
     if plot_history:
         print("\nPlotting training history ...\n")
         plot_history(history)
@@ -149,11 +156,15 @@ def build_train_val_model(input_shape,
         print(f"\n{m*70}\n\t\tEVALUATING BEST MODEL\n{m*70}\n")
         # load best model (latest save)
         weights_path = os.path.join(save_dir,name)
+        model_eval = model_from_json(os.path.join(config_path, f'{name}.json'))
+        model_eval.load_weights(weights_path)
+        # if model_idx == 0:
+        #     model_best = load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout)
+        model_eval.compile(optimizer = Adam(learning_rate=lr),
+                  loss = 'categorical_crossentropy',
+                  metrics = ['accuracy'])
 
-        if model_idx == 0:
-            model_best = load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout)
-
-        loss, acc = model_best.evaluate(test_gen,
+        loss, acc = model_eval.evaluate(test_gen,
                                    batch_size=batch_size,
                                    verbose=2)
 

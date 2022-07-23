@@ -3,7 +3,6 @@ INCEPTION-V3 MODULE:
 '''
 # import libraries
 from tensorflow.keras.applications.inception_v3 import InceptionV3
-from tensorflow.keras import layers
 import time
 
 # src imports
@@ -100,20 +99,20 @@ def build_inception_v3(input_shape,
     
     return model
 # -------------------------------------------------------------------------------------------------
-def load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout):
-    model = InceptionV3(input_shape = input_shape,
-                                    include_top= False,
-                                    weights = None)
-    last_layer = model.get_layer(last_layer)
-    last_output = last_layer.output
-    print('Building Dense layers...')
-    print(f'\tAdding Dense layer with {dense_nodes} nodes')
-    print(f'\tAdding classification layer for {class_num} classes')
-    model = add_Dense_layers(model, last_output, dense_nodes, class_num, dropout)  
-    # load saved weights from weights path
-    model.load_weights(weights_path)
-    # freeze weights of each layer
-    for layer in model.layers:
-        layer.trainable = False
+# def load_inception_v3(weights_path, input_shape, last_layer, dense_nodes, class_num, dropout):
+#     model = InceptionV3(input_shape = input_shape,
+#                                     include_top= False,
+#                                     weights = None)
+#     last_layer = model.get_layer(last_layer)
+#     last_output = last_layer.output
+#     print('Building Dense layers...')
+#     print(f'\tAdding Dense layer with {dense_nodes} nodes')
+#     print(f'\tAdding classification layer for {class_num} classes')
+#     model = add_Dense_layers(model, last_output, dense_nodes, class_num, dropout)  
+#     # load saved weights from weights path
+#     model.load_weights(weights_path)
+#     # freeze weights of each layer
+#     for layer in model.layers:
+#         layer.trainable = False
 
-    return model
+#     return model
