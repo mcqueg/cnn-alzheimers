@@ -10,7 +10,7 @@ from datetime import datetime
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.models import load_weights
+# from tensorflow.keras.models import load_weights
 from tensorflow.keras.models import model_from_json
 
 
