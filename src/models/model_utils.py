@@ -42,84 +42,36 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
     return dense_model
 
     #--------------------------------------------------------------------------------------------
-# def train_val_model(model,
-#                     model_name,
-#                     train_dir,
-#                     logs_dir,
-#                     save_dir,
-#                     val_size,
-#                     epochs,
-#                     batch_size):
-#     '''
-#     Purpose: Train the compiled model. Model trains for specified epochs or until it early
-#                 stopping is triggered via a val_loss call back. 
-#     parameters:
-#         model - compiled motel to be trained.  
-#         train_dir- string - root dir of the training images to use. organized by class in foflders.
-#         val_size - float - size of the validation split from the training data
-#                     epochs num of epochs to train for
-#         batch_size - int - batch size of images
-#     Returns:
-#         history - model training history
-#     '''
-    # now = datetime.now()
-    # start_time = now.strftime("_%d-%m-%Y_%H:%M:%S")
-    # # -- BUILD IMAGE GENERATORS -- 
-    # datagen = ImageDataGenerator(
-    #     rescale = 1./255,
-    #     rotation_range=20,
-    #     horizontal_flip = True,
-    #     vertical_flip = True,
-    #     validation_split = val_size)
+def load_model(json_path,
+               weights_path,
+               last_frozen_layer,
+               class_num,
+               print_summary=False):
 
-    # train_generator = datagen.flow_from_directory(train_dir,
-    #                                               batch_size = batch_size,
-    #                                               class_mode = 'categorical',
-    #                                               subset='training',
-    #                                               shuffle=True,
-    #                                               seed = 42)
-    
-    # val_generator = datagen.flow_from_directory(train_dir,
-    #                                               batch_size = batch_size,
-    #                                               class_mode = 'categorical',
-    #                                               subset='validation',
-    #                                               shuffle=True,
-    #                                               seed = 42)
+    # load archhitecture
 
-    # # -- CREATE CALLBACKS --
-    # # create new unique log dir for current run log for Tensorboard
-    # name = f'{model_name}_{start_time}'
-    # log = os.path.join(logs_dir, name)
-    # # generate callbaks
-    # callbacks = [
-    #     # monitor the validation loss exiting training if it doesnt improve
-    #     #   after 'patience' num of epochs.
-    #     EarlyStopping(monitor='val_loss', mode='min',patience=10, verbose=1),
+    # load weights
 
-    #     # monitor training progress using Tensorboard
-    #     TensorBoard(log_dir = log),
+    # get layer index for the last frozen layer
 
-    #     # checkpoint model 
-    #     ModelCheckpoint(
-    #         filepath=os.path.join(save_dir,name),
-    #         monitor='val_loss',
-    #         verbose=1,
-    #         save_best_only=True,
-    #         mode='min',
-    #         save_freq='epoch')
-    #     ]
+    # iterate through the last frozen layer freezing weights
 
-    # # -- FIT MODEL -- 
-    # history = model.fit(train_generator,
-    #                     epochs=epochs,
-    #                     verbose=1,
-    #                     validation_data=val_generator,
-    #                     callbacks = [callbacks])
+    # clone model randomly initializing the weights
 
-    # #plot_history(history)
+    # set output of frozen model to be the last forzen layer
 
-    # return history
+    # set input of cloned model to be the last_frozen layer index +1
 
+    # build model from both
+
+    # set ouput of that model to be len(model.layers) - 1
+
+    # feed output to a new classificaiton layer based on class num
+
+    if print_summary:
+        model.summary()
+
+    return model
 
 #---------------------------------------------------------------------------------------------------
 
