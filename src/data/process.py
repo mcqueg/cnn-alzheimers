@@ -15,8 +15,9 @@ def process_img(img_path):
             processed_img - image processed, ready to be used for training.
     '''
     # strip the skull from the image
-    img = strip_skull(img_path)
+    #img = strip_skull(img_path)
     # create a 3channel grayscale image
+    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     processed_img = stack_image(img)
 
     return processed_img
@@ -126,16 +127,16 @@ if __name__== "__main__":
     ROOT = '/Users/garrettmccue/projects/cnn-alzheimers/'
     data = f'{ROOT}/data/'
 
-    os.makedirs(f'{data}/processed/ADNI/train')
-    os.makedirs(f'{data}/processed/ADNI/test')
+    os.makedirs(f'{data}/processed/ALZ/train')
+    os.makedirs(f'{data}/processed/ALZ/test')
 
     # path to save images to
-    TRAIN_OUT_DIR = f'{data}/processed/ADNI/train'
+    TRAIN_OUT_DIR = f'{data}/processed/ALZ/train'
     # path to raw data root folder 
-    TRAIN_IN_DIR = f'{data}/raw/ADNI/train'
+    TRAIN_IN_DIR = f'{data}/raw/ALZ/train'
 
-    TEST_OUT_DIR = f'{data}/processed/ADNI/test'
-    TEST_IN_DIR = f'{data}/raw/ADNI/test'
+    TEST_OUT_DIR = f'{data}/processed/ALZ/test'
+    TEST_IN_DIR = f'{data}/raw/ALZ/test'
     # process the training images
     process_dir(TRAIN_IN_DIR, TRAIN_OUT_DIR)
     # process the test images
