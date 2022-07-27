@@ -118,6 +118,7 @@ def build_train_val_model(model_type,
     
     history = train_val(model=model,
                         name=name,
+                        weights_path=weights_path,
                         train_dir=train_dir,
                         test_dir=test_dir,
                         logs_dir = logs_dir,
@@ -161,8 +162,8 @@ def load_train_val_model(model_name,
                     class_num=class_num)
 
     os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
-    weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
-    print(f"\nsaving weights at: \n\t{weights_path}")
+    save_weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
+    print(f"\nsaving weights at: \n\t{save_weights_path}")
 
     os.makedirs(os.path.join(os.path.join(save_dir,name), 'config'), exist_ok=True)
     config_path=os.path.join(os.path.join(save_dir,name), 'config')
@@ -182,6 +183,7 @@ def load_train_val_model(model_name,
 
     history = train_val(model=model,
                         name=name,
+                        weights_path=save_weights_path,
                         train_dir=train_dir,
                         test_dir=test_dir,
                         logs_dir = logs_dir,
@@ -199,6 +201,7 @@ def load_train_val_model(model_name,
 # ----------------------------------------------------------------------
 def train_val(model,
             name,
+            weights_path,
             train_dir,
             test_dir,
             logs_dir,
