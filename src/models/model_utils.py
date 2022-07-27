@@ -53,20 +53,20 @@ def load_model(json_path,
     # load weights
 
     # get layer index for the last frozen layer
+    #  Find the index of the first block3 layer
+    # for index in range(len(vgg16.layers)):
+    # if 'block3' in vgg16.layers[index].name:
+    #    break
 
     # iterate through the last frozen layer freezing weights
 
-    # clone model randomly initializing the weights
+    # clone model (randomly initializes the weights)
 
     # set output of frozen model to be the last forzen layer
 
     # set input of cloned model to be the last_frozen layer index +1
 
     # build model from both
-
-    # set ouput of that model to be len(model.layers) - 1
-
-    # feed output to a new classificaiton layer based on class num
 
     if print_summary:
         model.summary()
