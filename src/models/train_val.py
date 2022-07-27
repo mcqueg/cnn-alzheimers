@@ -209,7 +209,7 @@ def train_val(model,
             plot_history=False, 
             evaluate=False):
 
-
+    m = '*'
     # BEGIN TRAINING
     print(f"\n{m*60}\n\t\tSTARTING TRAINING\n{m*60}\n")
     # # shuffle images
