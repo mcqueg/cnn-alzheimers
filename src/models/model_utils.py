@@ -4,6 +4,7 @@ from tensorflow.keras import Model
 # from tensorflow.keras.preprocessing.image import ImageDataGenerator
 # from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import model_from_json, clone_model
 
 # # local imports
 # from src.data.process import process_img
@@ -49,25 +50,38 @@ def load_model(json_path,
                print_summary=False):
 
     # load archhitecture
-
+    json_file = open(json_path, 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
     # load weights
+    loaded_model.load_weights(weights_path)
+    # clone model (randomly initializes the weights) trainable
+    clone_model = clone_model(loaded_model)
 
     # get layer index for the last frozen layer
     #  Find the index of the first block3 layer
-    # for index in range(len(vgg16.layers)):
-    # if 'block3' in vgg16.layers[index].name:
-    #    break
+   
+    # get index of last frozen layer
+    for index in range(len(loaded_model.layers)):
+        if last_frozen_layer in loaded_model.layers[index].name:
+            break
 
-    # iterate through the last frozen layer freezing weights
-
-    # clone model (randomly initializes the weights)
-
+    # iterate through the layers freezing weights
+    for layer in loaded_model.layers:
+        layer.trainable = False
+        
     # set output of frozen model to be the last forzen layer
-
-    # set input of cloned model to be the last_frozen layer index +1
-
+    frozen_layer = loaded_model.get_layer(last_frozen_layer)
+    last_output = frozen_layer.output
+    x = last_output
+    # set input of cloned model to be the last_frozen layer 
+    for i in range(index, len(clone_model.layers)):
+        clone_model.layers[i].trainable = True
+        # connect layer to output
+        x = clone_model.layers[i](x)
     # build model from both
-
+    model = Model(loaded_model.input, x)
     if print_summary:
         model.summary()
 

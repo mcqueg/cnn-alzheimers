@@ -138,7 +138,7 @@ def load_train_val_model(model_name,
                         json_path,
                         weights_path,
                         last_frozen_layer,
-                        class_num,
+  #                      class_num,
                         train_dir,
                         test_dir,
                         logs_dir,
@@ -160,8 +160,8 @@ def load_train_val_model(model_name,
     print(f"\n{m*60}\n\t\tLOADING MODEL MODEL\n{m*60}\n")
     model = load_model(json_path=json_path,
                     weights_path=weights_path,
-                    last_frozen_layer=last_frozen_layer,
-                    class_num=class_num)
+                    last_frozen_layer=last_frozen_layer)
+      #              class_num=class_num)
 
     os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
     save_weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
