@@ -46,7 +46,6 @@ def add_Dense_layers(model, last_output, dense_nodes, class_num, dropout):
 def load_model(json_path,
                weights_path,
                last_frozen_layer,
-               class_num,
                print_summary=False):
 
     # load archhitecture
