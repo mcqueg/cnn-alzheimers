@@ -157,7 +157,7 @@ def load_train_val_model(model_name,
     
     # -- BUILDING MODEL -- 
     m = '*'
-    print(f"\n{m*60}\n\t\tLOADING MODEL MODEL\n{m*60}\n")
+    print(f"\n{m*60}\n\t\tLOADING MODEL\n{m*60}\n")
     model = load_model(json_path=json_path,
                     weights_path=weights_path,
                     last_frozen_layer=last_frozen_layer)
