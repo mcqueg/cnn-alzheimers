@@ -56,7 +56,7 @@ def load_model(json_path,
     # load weights
     loaded_model.load_weights(weights_path)
     # clone model (randomly initializes the weights) trainable
-    clone_model = clone_model(loaded_model)
+    cloned_model = clone_model(loaded_model)
 
     # get layer index for the last frozen layer
     #  Find the index of the first block3 layer
@@ -75,10 +75,10 @@ def load_model(json_path,
     last_output = frozen_layer.output
     x = last_output
     # set input of cloned model to be the last_frozen layer 
-    for i in range(index, len(clone_model.layers)):
-        clone_model.layers[i].trainable = True
+    for i in range(index, len(cloned_model.layers)):
+        cloned_model.layers[i].trainable = True
         # connect layer to output
-        x = clone_model.layers[i](x)
+        x = cloned_model.layers[i](x)
     # build model from both
     model = Model(loaded_model.input, x)
     if print_summary:
