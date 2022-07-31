@@ -58,9 +58,6 @@ def load_model(json_path,
     # clone model (randomly initializes the weights) trainable
     cloned_model = clone_model(loaded_model)
 
-    # get layer index for the last frozen layer
-    #  Find the index of the first block3 layer
-   
     # get index of last frozen layer
     for index in range(len(loaded_model.layers)):
         if last_frozen_layer in loaded_model.layers[index].name:
@@ -69,22 +66,27 @@ def load_model(json_path,
     # iterate through the layers freezing weights
     for layer in loaded_model.layers:
         layer.trainable = False
-        
-    # set output of frozen model to be the last forzen layer
-    frozen_layer = loaded_model.get_layer(last_frozen_layer)
-    last_output = frozen_layer.output
-    x = last_output
-    # set input of cloned model to be the last_frozen layer 
-    for i in range(index, len(cloned_model.layers)):
-        cloned_model.layers[i].trainable = True
-        # connect layer to output
-        x = cloned_model.layers[i](x)
-    # build model from both
-    model = Model(loaded_model.input, x)
+    
+    # copy random weights to loaded model after last frozen layer
+    for i in range(index, len(loaded_model.layers)):
+        loaded_model.layers[i].set_weights(cloned_model.layers[i].get_weights())
+        loaded_model.layers[i].trainable = True
+    
+    # # set output of frozen model to be the last forzen layer
+    # frozen_layer = loaded_model.get_layer(last_frozen_layer)
+    # last_output = frozen_layer.output
+    # x = last_output
+    # # set input of cloned model to be the last_frozen layer 
+    # for i in range(index, len(cloned_model.layers)):
+    #     cloned_model.layers[i].trainable = True
+    #     # connect layer to output
+    #     x = cloned_model.layers[i](x)
+    # # build model from both
+    # model = Model(loaded_model.input, x)
     if print_summary:
-        model.summary()
+        loaded_model.summary()
 
-    return model
+    return loaded_model
 
 #---------------------------------------------------------------------------------------------------
 
