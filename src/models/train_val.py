@@ -159,7 +159,8 @@ def load_train_val_model(model_name,
     print(f"\n{m*60}\n\t\tLOADING MODEL\n{m*60}\n")
     model = load_model(json_path=json_path,
                     weights_path=weights_path,
-                    last_frozen_layer=last_frozen_layer)
+                    last_frozen_layer=last_frozen_layer,
+                    print_summary=print_summary)
 
     os.makedirs(os.path.join(os.path.join(save_dir,name),'ckpt'), exist_ok=True)
     save_weights_path=os.path.join(os.path.join(save_dir,name), 'ckpt/')
@@ -192,7 +193,6 @@ def load_train_val_model(model_name,
                         epochs =epochs,
                         lr=lr,
                         batch_size = batch_size,
-                        print_summary=print_summary,
                         plot_history=plot_history, 
                         evaluate=evaluate)
         
