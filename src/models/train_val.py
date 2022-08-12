@@ -317,6 +317,6 @@ def train_val(model,
                                    verbose=2)
 
         print("\nMODEL TEST ACCURACY: {:5.2f}%".format(100 * acc))
-        print("\nMODEL TEST LOSS: {:5.2}%".format(loss))
+        print("\nMODEL TEST LOSS: {:5.2}".format(loss))
 
     return history
