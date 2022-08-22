@@ -15,9 +15,10 @@ def process_img(img_path):
             processed_img - image processed, ready to be used for training.
     '''
     # strip the skull from the image
-    #img = strip_skull(img_path)
+    img = strip_skull(img_path)
     # create a 3channel grayscale image
-    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    #img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    #img = cv2.GaussianBlur(img, (5,5), 0)
     processed_img = stack_image(img)
 
     return processed_img
@@ -38,7 +39,7 @@ def strip_skull(img_path):
     #img = cv2.imread(img_path)
     #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    img = cv2.GaussianBlur(img, img.shape, 0)
+    img = cv2.GaussianBlur(img, (5,5), 0)
     #Threshold the image to binary using Otsu's method
     ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
     ret, markers = cv2.connectedComponents(thresh)
@@ -128,16 +129,16 @@ if __name__== "__main__":
     ROOT = '/Users/garrettmccue/projects/cnn-alzheimers/'
     data = f'{ROOT}/data/'
 
-    os.makedirs(f'{data}/processed/ALZ/train')
-    os.makedirs(f'{data}/processed/ALZ/test')
+    os.makedirs(f'{data}processed/ADNI/train')
+    os.makedirs(f'{data}processed/ADNI/test')
 
     # path to save images to
-    TRAIN_OUT_DIR = f'{data}/processed/ALZ/train'
+    TRAIN_OUT_DIR = f'{data}processed/ADNI/train'
     # path to raw data root folder 
-    TRAIN_IN_DIR = f'{data}/raw/ALZ/train'
+    TRAIN_IN_DIR = f'{data}raw/ADNI/train'
 
-    TEST_OUT_DIR = f'{data}/processed/ALZ/test'
-    TEST_IN_DIR = f'{data}/raw/ALZ/test'
+    TEST_OUT_DIR = f'{data}/processed/ADNI/test'
+    TEST_IN_DIR = f'{data}/raw/ADNI/test'
     # process the training images
     process_dir(TRAIN_IN_DIR, TRAIN_OUT_DIR)
     # process the test images
