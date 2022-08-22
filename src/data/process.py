@@ -38,6 +38,7 @@ def strip_skull(img_path):
     #img = cv2.imread(img_path)
     #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.GaussianBlur(img, img.shape, 0)
     #Threshold the image to binary using Otsu's method
     ret, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
     ret, markers = cv2.connectedComponents(thresh)
