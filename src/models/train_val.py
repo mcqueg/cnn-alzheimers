@@ -6,6 +6,7 @@ from src.models.inception_v3 import build_inception_v3
 from src.models.vgg19 import build_vgg19
 from src.models.resnet50 import build_resnet50
 from src.models.xception import build_xception
+from src.models.class_weights import get_class_weights
 from datetime import datetime
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
@@ -281,11 +282,13 @@ def train_val(model,
             save_freq='epoch')
         ]
 
+    class_weights = get_class_weights(train_dir)    
     # -- FIT MODEL -- 
     history = model.fit(train_gen,
                         epochs=epochs,
                         verbose=1,
                         validation_data=val_gen,
+                        loss_weights=class_weights,
                         callbacks = [callbacks])
 
     if plot_history:
