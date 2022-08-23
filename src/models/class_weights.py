@@ -3,27 +3,27 @@ import os
 def get_class_weights(train_dir):
     print(f'CLASSES: \n\t{os.listdir(train_dir)}')
     # get list of classes from dir names
+    classes = os.listdir(train_dir)
     # get number of files in each class folder as a list
     n_samples, n_classes = get_counts(train_dir)
     # compute weights ()
     weights = compute_weights(n_samples, n_classes)
-    print(f"CLASS WEIGHTS:\n\t{weights}")
-    return weights
+    weights_dict = dict(zip(classes, weights))
+    print(f"CLASS WEIGHTS:\n\t{weights_dict}")
+    return weights_dict
 
 
 def compute_weights(samples_num, n_classes):
     weights = []
-    idx = []
     total_num = sum(samples_num)
 
     #compute weight for each class
     for i in range(len(samples_num)):
-        idx.append(i)
+    
         tmp_weight = total_num/(n_classes*samples_num[i])
         weights.append(tmp_weight)
         
-    weights_dict = dict(zip(idx, weights))
-    return weights_dict
+    return weights
 
 
 def get_counts(train_dir):
