@@ -21,7 +21,7 @@ def compute_weights(samples_num, n_classes):
         tmp_weight = total_num/(n_classes*samples_num[i])
         weights.append(tmp_weight)
         
-    weights_dict = dict(zip(idx, weights_dict))
+    weights_dict = dict(zip(idx, weights))
     return weights_dict
 
 
