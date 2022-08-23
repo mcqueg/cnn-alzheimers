@@ -288,7 +288,7 @@ def train_val(model,
                         epochs=epochs,
                         verbose=1,
                         validation_data=val_gen,
-                        loss_weights=class_weights,
+                        class_weight=class_weights,
                         callbacks = [callbacks])
 
     if plot_history:
