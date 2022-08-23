@@ -6,9 +6,9 @@ def get_class_weights(train_dir):
     # get number of files in each class folder as a list
     n_samples, n_classes = get_counts(train_dir)
     # compute weights ()
-    weights_dict = compute_weights(n_samples, n_classes)
+    weights = compute_weights(n_samples, n_classes)
     print(f"CLASS WEIGHTS:\n\t{weights_dict}")
-    return weights_dict
+    return weights
 
 
 def compute_weights(samples_num, n_classes):
@@ -22,8 +22,8 @@ def compute_weights(samples_num, n_classes):
         tmp_weight = total_num/(n_classes*samples_num[i])
         weights.append(tmp_weight)
         
-    weights_dict = dict(zip(idx, weights))
-    return weights_dict
+   # weights_dict = dict(zip(idx, weights))
+    return weights
 
 
 def get_counts(train_dir):
