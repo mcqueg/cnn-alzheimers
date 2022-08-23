@@ -1,7 +1,7 @@
 import os
 
 def get_class_weights(train_dir):
-
+    print(f'CLASSES: \n\t{os.listdir(train_dir)}')
     # get list of classes from dir names
     # get number of files in each class folder as a list
     n_samples, n_classes = get_counts(train_dir)
