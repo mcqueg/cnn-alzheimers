@@ -7,7 +7,7 @@ def get_class_weights(train_dir):
     n_samples, n_classes = get_counts(train_dir)
     # compute weights ()
     weights = compute_weights(n_samples, n_classes)
-    print(f"CLASS WEIGHTS:\n\t{weights_dict}")
+    print(f"CLASS WEIGHTS:\n\t{weights}")
     return weights
 
 
