@@ -35,5 +35,5 @@ def get_counts(train_dir):
         tmp_folder = os.path.join(train_dir, classes[i])
         tmp_num = len(os.listdir(tmp_folder))
         n_samples.append(tmp_num)
-
+        print(f"\t\t{classes[i]}: {tmp_num}")
     return n_samples, n_classes
